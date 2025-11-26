@@ -2,14 +2,13 @@ from platform import node
 import sys
 import os
 from datetime import datetime, timezone, timedelta
-import turtle
-import serial
+import turtle 
 import json
 import time
 import subprocess
 import re
 import requests
-from bs4 import BeautifulSoup
+ 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QWidget
 from PyQt5.QtGui import QPixmap, QFont, QPainter, QBrush, QConicalGradient, QPen, QColor
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, Qt, QTimer, QRectF

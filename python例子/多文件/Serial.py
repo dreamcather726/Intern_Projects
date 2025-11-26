@@ -13,14 +13,12 @@ LORA_PORT = 'COM16'      # 连接LoRa模块的串口
 LORA_BAUD_RATE = 115200  # LoRa模块的波特率
 LORA_TIMEOUT  = 1 
 # --- 全局串口对象 ---
-
-
- 
 inquiry_device_ids = [1, 3, 5, 7, 9]  # 示例：只问询ID为1,3,5,7,9的设备
 AskTime=3000  # 每个设备的问询间隔
 devices_asktime=AskTime*len(inquiry_device_ids)   # 每轮设备询问的时间间隔
-Frame_Header=[0x55,0xAA]
-Frame_Tail=[0x00,0xff]
+Frame_Header=[0x55,0xAA]# 帧头
+Frame_Tail=[0xff]# 帧尾
+
 class SerialWorker(QThread):
     """
     串口工作线程类，负责在后台线程中处理串口通信。
@@ -45,6 +43,7 @@ class SerialWorker(QThread):
         self.inquiry_timer = QTimer(self)
         self.inquiry_timer.timeout.connect(self.send_inquiry)        
         self.inquiry_timer.start(devices_asktime)  # 30000毫秒 = 30秒
+        self.send_inquiry()
         print(f"问询定时器已启动，每{devices_asktime/1000}秒发送一轮设备问询帧")    
 
 
@@ -91,7 +90,7 @@ class SerialWorker(QThread):
         # 检查当前是否正在发送数据，如果是则等待
         while self.is_sending:
             print("[信息] 当前有数据正在发送，等待发送完成...")
-            time.sleep(0.1)
+            time.sleep(0.3)
         
         # 设置发送状态为正在发送
         self.is_sending = True
@@ -102,12 +101,12 @@ class SerialWorker(QThread):
                 return
             
             # 构建问询帧，格式: AA 设备号 FF
-            inquiry_frame = bytes([0xAA, device_id, 0xFF])
+            inquiry_frame = bytes([0xBB, device_id, 0xFF])
             
             # 发送问询帧
             self.lora_ser.write(inquiry_frame)
             hex_string = ' '.join(f'{b:02x}' for b in inquiry_frame)
-            print(f"-> 发送问询帧: {hex_string} (设备ID: {device_id})")
+            print(f"-> 发送问询帧: {hex_string.upper()} (设备ID: {device_id})")
             
         except Exception as e:
             print(f"[错误] 发送问询帧失败: {e}")
@@ -128,11 +127,12 @@ class SerialWorker(QThread):
             
             # 读取帧头检测
             byte_data = ser.read(len(Frame_Header))
-            if byte_data and byte_data[len(Frame_Header)-1] == Frame_Header[len(Frame_Header)-1]:  # 检测到帧头
+
+            if byte_data and byte_data[0] == Frame_Header[0]:  # 检测到帧头
                 if byte_data:
                         for byte in byte_data:
                             frame_buffer.append(byte) 
-                # print(f"[帧接收] 检测到帧头 {Frame_Header[0]:02x}")
+                print(f"[帧接收] 检测到帧头 {Frame_Header[0]:02x}")
                 
                 # 继续接收帧数据直到检测到帧尾或超时
                 while time.time() - start_time < timeout:
@@ -184,7 +184,7 @@ class SerialWorker(QThread):
             
             # 检查是否符合指令格式 (55 aa 01 00 FF)
             # 指令格式: [帧头1, 设备ID, 指令1, 指令2, 校验和]
-            if len(hex_bytes) >= 5 and hex_bytes[0] == Frame_Header[0] and hex_bytes[1] == Frame_Header[1]:### 检查帧头是否匹配根据定义的帧头添加条件
+            if len(hex_bytes) >= 5 and hex_bytes[0] == Frame_Header[0]:### 检查帧头是否匹配根据定义的帧头添加条件
                 device_id = hex_bytes[2] if len(hex_bytes) > 2 else 0
                 command = hex_bytes[3] if len(hex_bytes) > 4 else 0
                 # 先更新界面显示，再发送指令（更好的用户体验）
@@ -344,7 +344,7 @@ class SerialWorker(QThread):
                         if frame_data:
                             # 将字节数据转换为十六进制字符串格式
                             hex_data = ' '.join(f'{b:02x}' for b in frame_data)
-                            print(f"<- 语音识别串口接收 (完整帧): {hex_data}")
+                            print(f"<- 语音识别串口接收 (完整帧): {hex_data.upper()}")
                             # 传递数据给处理函数
                             self.handle_Voice_data(hex_data)
                 # 短暂休眠以减少CPU占用
