@@ -18,12 +18,12 @@ import json
 
 
 ### 语音输入串口参数
-VOICE_PORT = '/dev/ttyAMA4'    # 连接语音模块的串口
+VOICE_PORT = 'com23'    # 连接语音模块的串口 '/dev/ttyAMA4' 
 VOICE_BAUD_RATE = 9600  # 语音模块的波特率
 VOICE_TIMEOUT  = 1 
 
-LORA_PORT = '/dev/ttyAMA0'      # 连接LoRa模块的串口
-LORA_BAUD_RATE = 115200  # LoRa模块的波特率
+LORA_PORT = 'com16'      # 连接LoRa模块的串口  '/dev/ttyAMA0'  
+LORA_BAUD_RATE = 115200  # LoRa模块的波特率https://github.com/dreamcather726/Intern_Projects
 
 LORA_TIMEOUT  = 1 
 
@@ -33,7 +33,7 @@ light_threshold=500  # 自动照明的阈值，默认500lux
 auto_mode_flag=False  # 自动照明模式
 
 ##图片路径
-IMG_PATH = r"/home/pi/Desktop/shengweupeiyu/PIC"
+IMG_PATH = r"PIC"
 BACKGROUND_IMAGE = os.path.join(IMG_PATH, "background.jpg")
 FAN_ON_IMAGE = os.path.join(IMG_PATH, "fan_on.png")
 FAN_OFF_IMAGE = os.path.join(IMG_PATH, "fan_off.png")
@@ -59,7 +59,7 @@ is_sending = False  # 全局变量，用于标识当前是否正在发送数据
 device_data = [None] * 1  # 每个元素将存储一个设备的数据字典
 
 # 设备号数组，定义需要依次发送问询帧的设备ID
-DEVICE_IDS = [15]  # 可根据实际设备数量和ID进行调整
+DEVICE_IDS = [1,15]  # 可根据实际设备数量和ID进行调整
 
 
 def get_current_connected_wifi():
@@ -497,7 +497,7 @@ class MainWindow(QMainWindow):
     ##初始化主线程窗口，处理和更新ui显示
     def __init__(self):
         super().__init__()        
-        uic.loadUi('/home/pi/Desktop/shengweupeiyu/main.ui', self)##加载UI文件
+        uic.loadUi('E:\Arduinoproject\Project\生物培育\main.ui', self)##加载UI文件
 
         self.set_background_image()##设置背景图片        
         self.init_time_display()##初始化时间显示        
@@ -538,7 +538,7 @@ class MainWindow(QMainWindow):
             )
             # 打印命令输出（调试用）
  
-            
+            # print(f"ping命令输出: {result.stdout}")
             if result.returncode == 0:
                 self.Load_pic(self.wifi_status, WIFI_ON_IMAGE)
                 print("已联网")
