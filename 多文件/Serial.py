@@ -17,7 +17,7 @@ inquiry_device_ids = [1, 3, 5, 7, 9]  # 示例：只问询ID为1,3,5,7,9的设�
 AskTime=3000  # 每个设备的问询间隔
 devices_asktime=AskTime*len(inquiry_device_ids)   # 每轮设备询问的时间间隔
 Frame_Header=[0x55,0xAA]# 帧头
-Frame_Tail=[0xff]# 帧尾
+Frame_Tail=[0x00,0xff]# 帧尾
 
 class SerialWorker(QThread):
     """
@@ -142,8 +142,8 @@ class SerialWorker(QThread):
                             for byte in byte_data:
                                 frame_buffer.append(byte)   
                             # 检查是否到达帧尾
-                            if byte_data[len(Frame_Tail)-1] == Frame_Tail[len(Frame_Tail)-1]:
-                                # print(f"[帧接收] 检测到帧尾 {Frame_Tail[len(Frame_Tail)-1]:02x}，完整帧接收完成")
+                            if byte_data[-1] == Frame_Tail[-1]:
+                                # print(f"[帧接收] 检测到帧尾 {Frame_Tail[-1]:02x}，完整帧接收完成")
                                 return bytes(frame_buffer)
                     time.sleep(0.01)
                 
@@ -245,7 +245,7 @@ class SerialWorker(QThread):
                 self.lora_ser.write(command)
                 # 为了方便调试，将发送的字节指令以十六进制格式打印出来
                 hex_string = ' '.join(f'{b:02x}' for b in command)
-                print(f"-> LoRa发送 (第{attempt+1}次): {hex_string}")
+                print(f"-> LoRa发送 (第{attempt+1}次): {hex_string.upper()}")
                 time.sleep(interval_time)  # 每次发送后短暂延时
             
             # 3次发送完成后，再延时一小段时间，确保LoRa模块有时间处理和切换收发状态
