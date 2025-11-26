@@ -34,7 +34,7 @@ auto_mode_flag=False  # 自动照明模式
 
 ##图片路径
 IMG_PATH = r"PIC"
-BACKGROUND_IMAGE = os.path.join(IMG_PATH, "background.jpg")
+BACKGROUND_IMAGE = os.path.join(IMG_PATH, "background.png")
 FAN_ON_IMAGE = os.path.join(IMG_PATH, "fan_on.png")
 FAN_OFF_IMAGE = os.path.join(IMG_PATH, "fan_off.png")
 LIGHT_MODE_ON = os.path.join(IMG_PATH, "light_mode_on.png")
@@ -45,6 +45,9 @@ ON_IMAGE = os.path.join(IMG_PATH, "on.png")
 OFF_IMAGE = os.path.join(IMG_PATH, "off.png")
 WIFI_ON_IMAGE = os.path.join(IMG_PATH, "wifi_on.png")
 WIFI_OFF_IMAGE = os.path.join(IMG_PATH, "wifi_off.png")
+
+FEED_ON_IMAGE = os.path.join(IMG_PATH, "feed_on.png")
+FEED_OFF_IMAGE = os.path.join(IMG_PATH, "feed_off.png")
 
 
 
@@ -60,6 +63,10 @@ device_data = [None] * 1  # 每个元素将存储一个设备的数据字典
 
 # 设备号数组，定义需要依次发送问询帧的设备ID
 DEVICE_IDS = [1,15]  # 可根据实际设备数量和ID进行调整
+
+# 定时发送相关变量
+last_scheduled_time = None  # 上次定时发送时间
+SCHEDULED_TIMES = [(11, 45), (23, 45)]  # 定时发送时间列表 (小时, 分钟)
 
 
 def get_current_connected_wifi():
@@ -216,6 +223,7 @@ class SerialWorker(QObject):
         """用于在后台线程中处理串口通信"""
         # 定义信号，用于向主窗口发送数据
         data_received = pyqtSignal(float,float,int,int,float,float)   # 发送设备数据给主线程
+        data_water = pyqtSignal(int,int,int)  # 发送水传感器数据给主线程
         data_voice_data = pyqtSignal(int,int,int)  # 发送语音指令数据给主线程
         data_json = pyqtSignal(str,str)  # 发送JSON数据给主线程
         change_wifi = pyqtSignal(int)  # 发送WiFi信息给主线程
@@ -337,6 +345,13 @@ class SerialWorker(QObject):
                     
                     # 解析数据，将数据发送给主线程
                     self.data_received.emit(temperature, humidity, light, pm25, uv, weather)
+                elif len(sensor_values) == 3:##1,0.00,0.00
+                    device_id = sensor_values[0]
+                    pHValue = sensor_values[1]
+                    tempValue = sensor_values[2]
+                    self.data_water.emit(device_id, pHValue, tempValue)
+                    print(f"设备ID: {device_id}, pH值: {pHValue}, 温度值: {tempValue}")
+
                 else:
                     print(f"[警告] 收到的数据格式不正确，预期7个传感器值，实际收到{len(sensor_values)}个: {sensor_values}")
             except ValueError as e:
@@ -519,6 +534,49 @@ class MainWindow(QMainWindow):
         
         # 添加标志位，用于标识是否正在进行设备问询
         self.is_inquiring = False
+        
+        # 启动定时发送指令的定时器，每分钟检查一次
+        self.schedule_timer = QTimer(self)
+        self.schedule_timer.timeout.connect(self.check_scheduled_send)
+        self.schedule_timer.start(30000)  # 60000毫秒 = 1分钟
+        print("定时发送定时器已启动，每分钟检查一次定时发送")
+    def check_scheduled_send(self):
+        """检查并执行定时发送指令"""
+        global last_scheduled_time
+        
+        # 获取当前时间
+        beijing_tz = timezone(timedelta(hours=8))
+        now = datetime.now(beijing_tz)
+        current_hour = now.hour
+        current_minute = now.minute
+        
+        # 检查当前时间是否在定时发送时间列表中
+        for scheduled_time in SCHEDULED_TIMES:
+            scheduled_hour, scheduled_minute = scheduled_time
+            
+            # 如果当前时间匹配定时时间，并且上次发送时间不是当前时间
+            if (current_hour == scheduled_hour and 
+                current_minute == scheduled_minute and 
+                last_scheduled_time != (current_hour, current_minute)):
+                
+                print(f"定时发送时间到：{scheduled_hour:02d}:{scheduled_minute:02d}")
+                print("开始发送定时指令：A0 01 01 00 FF")
+                
+                # 调用send_lora_command函数发送指令
+                # 指令格式：A0 01 01 00 FF
+                # 设备ID=0x01, 节点ID=0x01, 动作=0x00
+                self.Load_pic(self.feed, FEED_ON_IMAGE)
+                self.Load_pic(self.feed_mode, ON_IMAGE)
+                send_lora_command(device_id=0x01, node_id=0x01, action=0x00)
+                time.sleep(1)
+                self.Load_pic(self.feed, FEED_OFF_IMAGE)
+                self.Load_pic(self.feed_mode, OFF_IMAGE)
+                # 更新上次发送时间
+                last_scheduled_time = (current_hour, current_minute)
+                
+                print("定时指令发送完成")
+                break
+    
     def check_internet_connection(self):
         """判断树莓派是否联上网络
         
@@ -529,7 +587,7 @@ class MainWindow(QMainWindow):
             # 使用ping命令检查是否能连接到Google DNS服务器
             # -c 1: 发送1个ping包
             # -W 1: 超时时间1秒
-            print(f"开始检查网络连接")
+            # print(f"开始检查网络连接")
             result = subprocess.run(
                 ["ping", "-c", "1", "-W", "1", "www.baidu.com"],
                 stdout=subprocess.PIPE,
@@ -541,10 +599,10 @@ class MainWindow(QMainWindow):
             # print(f"ping命令输出: {result.stdout}")
             if result.returncode == 0:
                 self.Load_pic(self.wifi_status, WIFI_ON_IMAGE)
-                print("已联网")
+                # print("已联网")
             else:
                 self.Load_pic(self.wifi_status, WIFI_OFF_IMAGE)
-                print("未联网")
+                # print("未联网")
             # 如果返回码为0，表示ping成功，已联网
              
         except Exception as e:
@@ -701,6 +759,10 @@ class MainWindow(QMainWindow):
 
         self.init_label(self.wifi, "小智未连接", "gray")
 
+        self.init_label(self.water_pH, "88", "white")
+
+        self.init_label(self.water_temp, "88.8℃", "white")
+
     def Load_pic(self,Label,pic_path):
         if Label is not None:
             self.pic_set = QPixmap(pic_path)
@@ -730,6 +792,8 @@ class MainWindow(QMainWindow):
         self.Load_pic(self.fan3, FAN_OFF_IMAGE)
         self.Load_pic(self.fan3_mode, OFF_IMAGE)
         self.Load_pic(self.wifi_status, WIFI_OFF_IMAGE)
+        self.Load_pic(self.feed, FEED_OFF_IMAGE)
+        self.Load_pic(self.feed_mode, OFF_IMAGE)
     
     def init_gauge(self, name, min_val, max_val, colors, width, height, x, y, gauge_width=20, 
                    start_angle=None, total_angle=None, initial_value=0):
@@ -794,8 +858,8 @@ class MainWindow(QMainWindow):
                 'colors': [QColor(1, 253, 209), QColor(25,234,255), QColor(85,255,243)], 
                 'width': default_width,
                 'height': default_height,
-                'x': 1900,
-                'y': Y_pos,
+                'x': 1745,
+                'y': Y_pos+15,
                 'gauge_width': big_gauge_width,
                 'initial_value': 60
             },
@@ -808,8 +872,8 @@ class MainWindow(QMainWindow):
                 
                 'width': default_width,
                 'height': default_height,
-                'x': 1900+600,
-                'y': Y_pos,
+                'x': 1900+600-295,
+                'y': Y_pos+15,
                 'gauge_width': big_gauge_width,
                 'initial_value': 100
             },
@@ -822,8 +886,8 @@ class MainWindow(QMainWindow):
                 
                 'width': default_width,
                 'height': default_height,
-                'x': 1900+600+610,
-                'y': Y_pos,
+                'x': 1900+600+610-440,
+                'y': Y_pos+15,
                 'gauge_width': big_gauge_width,
                 'initial_value': 200
             },
@@ -836,8 +900,8 @@ class MainWindow(QMainWindow):
                 
                 'width': sepeciail_width,
                 'height': sepeciail_height,
-                'x': X_pos-5,
-                'y': Y_pos2, 
+                'x': X_pos-158,
+                'y': Y_pos2-10, 
                 'gauge_width': bigger_gauge_width,
                 'start_angle': start_angle,
                 'total_angle': total_angle,
@@ -852,8 +916,8 @@ class MainWindow(QMainWindow):
                 
                 'width': sepeciail_width,
                 'height': sepeciail_height,
-                'x': X_pos+600,
-                'y': Y_pos2,
+                'x': X_pos+600-296,
+                'y': Y_pos2-10,
                 'gauge_width': bigger_gauge_width,
                 'start_angle': start_angle,
                 'total_angle': total_angle,
@@ -861,15 +925,31 @@ class MainWindow(QMainWindow):
             },
             # 天气仪表盘
             {
-                'name': 'weather_gauge',
+                'name': 'water_pH_gauge',
                 'min_val': 0.0,
-                'max_val': 100.0,
+                'max_val': 14.0,
                 'colors': [QColor(80,191,255), QColor(93,229,255), QColor(92,255,183)], #（80,191,255）（93,229,255）（92,255,183）
                 
-                'width': sepeciail_width,
-                'height': sepeciail_height,
-                'x': X_pos+600+610,
+                'width': default_width,
+                'height': default_height,
+                'x': X_pos+600+800,
                 'y': Y_pos2,
+                'gauge_width': bigger_gauge_width,
+                'start_angle': start_angle,
+                'total_angle': total_angle,
+                'initial_value': 100
+            },
+            # 天气仪表盘
+            {
+                'name': 'water_temp_gauge',
+                'min_val': 0.0,
+                'max_val': 60.0,
+                'colors': [QColor(80,191,255), QColor(93,229,255), QColor(92,255,183)], #（80,191,255）（93,229,255）（92,255,183）
+                
+                'width': default_width,
+                'height': default_height,
+                'x': X_pos+600+800-5,
+                'y': Y_pos+10,
                 'gauge_width': bigger_gauge_width,
                 'start_angle': start_angle,
                 'total_angle': total_angle,
@@ -1123,7 +1203,12 @@ class MainWindow(QMainWindow):
                  
             else:
                 print(f"[全部设备] 未知指令: 0x{node:02X}")
-            
+    def update_water_display(self, device_id, pHValue, tempValue):
+        print(f"[水传感器] 设备ID: {device_id}, pH值: {pHValue}, 温度值: {tempValue}")
+        self.init_label(self.water_pH, f"{pHValue}", "white")
+        self.init_label(self.water_temp, f"{tempValue}℃", "white")
+        self.water_pH_gauge.setValue(pHValue)
+        self.water_temp_gauge.setValue(tempValue)
     def update_xiaozhi_display(self, role, content):
         print(f"[小助手] {role}: {content}")
         self.init_label(self.wifi, "小智已连接", "white")
@@ -1201,6 +1286,7 @@ def main():
         worker_thread.started.connect(serial_worker.run)
         # 连接SerialWorker的数据信号到MainWindow的显示槽
         serial_worker.data_received.connect(main_window.update_display)
+        serial_worker.data_water.connect(main_window.update_water_display)
         serial_worker.data_voice_data.connect(main_window.update_voice_display)
         serial_worker.data_json.connect(main_window.update_xiaozhi_display)
         serial_worker.change_wifi.connect(main_window.change_wifi)

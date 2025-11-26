@@ -30,8 +30,34 @@
    <widget class="QLabel" name="temp_label">
     <property name="geometry">
      <rect>
-      <x>1980</x>
+      <x>1830</x>
       <y>900</y>
+      <width>150</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="water_temp">
+    <property name="geometry">
+     <rect>
+      <x>3370</x>
+      <y>900</y>
+      <width>150</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="water_pH">
+    <property name="geometry">
+     <rect>
+      <x>3370</x>
+      <y>1340</y>   
       <width>150</width>
       <height>50</height>
      </rect>
@@ -43,7 +69,7 @@
    <widget class="QLabel" name="humidity_label">
     <property name="geometry">
      <rect>
-      <x>2585</x>
+      <x>2300</x>
       <y>900</y>
       <width>150</width>
       <height>50</height>
@@ -56,7 +82,7 @@
    <widget class="QLabel" name="pm25_label">
     <property name="geometry">
      <rect>
-      <x>3190</x>
+      <x>2760</x>
       <y>900</y>
       <width>150</width>
       <height>50</height>
@@ -69,8 +95,8 @@
    <widget class="QLabel" name="light_label">
     <property name="geometry">
      <rect>
-      <x>1980</x>
-      <y>1200</y>
+      <x>1830</x>
+      <y>1180</y>
       <width>150</width>
       <height>50</height>
      </rect>
@@ -82,8 +108,8 @@
    <widget class="QLabel" name="LUX">
     <property name="geometry">
      <rect>
-      <x>1980</x>
-      <y>1240</y>
+      <x>1830</x>
+      <y>1220</y>
       <width>150</width>
       <height>50</height>
      </rect>
@@ -95,8 +121,8 @@
    <widget class="QLabel" name="uv_label">
     <property name="geometry">
      <rect>
-      <x>2585</x>
-      <y>1210</y>
+      <x>2280</x>
+      <y>1190</y>
       <width>150</width>
       <height>50</height>
      </rect>
@@ -108,8 +134,8 @@
    <widget class="QLabel" name="weather_label">
     <property name="geometry">
      <rect>
-      <x>3190</x>
-      <y>1210</y>
+      <x>2750</x>
+      <y>1180</y>
       <width>150</width>
       <height>50</height>
      </rect>
@@ -353,6 +379,33 @@
      <string>TextLabel</string>
     </property>
    </widget>
+    <widget class="QLabel" name="feed">
+    <property name="geometry">
+     <rect>
+      <x>1880</x>
+      <y>1780</y>
+      <width>150</width>
+      <height>150</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="feed_mode"> 
+    <property name="geometry">
+     <rect>
+      <x>1920</x>       
+      <y>1940</y>
+      <width>180</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   
    <widget class="QLabel" name="assistant">
     <property name="geometry">
      <rect>
