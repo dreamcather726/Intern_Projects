@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>806</width>
+    <height>616</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="temp1_label">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>315</y>
+      <width>150</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="hum1_label">
+    <property name="geometry">
+     <rect>
+      <x>182</x>
+      <y>315</y>
+      <width>150</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+    <widget class="QLabel" name="temp2_label">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>315</y>
+      <width>150</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="hum2_label">
+    <property name="geometry">
+     <rect>
+      <x>482</x>
+      <y>315</y>
+      <width>150</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="curtain_status">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>325</y>
+      <width>70</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="master_light_status">
+    <property name="geometry">
+     <rect>
+      <x>837</x>
+      <y>250</y>
+      <width>60</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="music_status">
+    <property name="geometry">
+     <rect>
+      <x>1005</x>
+      <y>265</y>
+      <width>50</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="secondroom_light_status">
+    <property name="geometry">
+     <rect>
+      <x>1145</x>
+      <y>250</y>
+      <width>60</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="kitchen_hood_status">
+    <property name="geometry">
+     <rect>
+      <x>59</x>
+      <y>478</y>
+      <width>60</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="hood_status">
+    <property name="geometry">
+     <rect>
+      <x>59</x>
+      <y>550</y>
+      <width>70</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="kitchen_light_status">
+    <property name="geometry">
+     <rect>
+      <x>253</x>
+      <y>478</y>
+      <width>60</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="living_window_status">
+    <property name="geometry">
+     <rect>
+      <x>385</x>
+      <y>478</y>
+      <width>60</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="window_status">
+    <property name="geometry">
+     <rect>
+      <x>385</x>
+      <y>550</y>
+      <width>70</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="living_light_status">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>478</y>
+      <width>60</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   
+  
+
+   <widget class="QLabel" name="study_desk_status">
+    <property name="geometry">
+     <rect>
+      <x>690</x>
+      <y>550</y>
+      <width>70</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+    <widget class="QLabel" name="study_light_status">
+    <property name="geometry">
+     <rect>
+      <x>837</x>
+      <y>478</y>
+      <width>50</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+
+   <widget class="QLabel" name="bathroom_light_status">
+    <property name="geometry">
+     <rect>
+      <x>1000</x>
+      <y>478</y>
+      <width>60</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="auto_door_status">
+    <property name="geometry">
+     <rect>
+      <x>1150</x>
+      <y>560</y>
+      <width>60</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+    <widget class="QLabel" name="door_status">
+    <property name="geometry">
+     <rect>
+      <x>1154</x>
+      <y>478</y>
+      <width>60</width>
+      <height>60</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
