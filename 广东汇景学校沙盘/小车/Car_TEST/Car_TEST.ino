@@ -152,7 +152,7 @@ void setup() {
   strip.show();//显示颜色
   delay(1000);
   Serial.println("PN532 RFID测试（WiFiDuino32 自定义I2C引脚）");
-  volch(35);
+  volch(20);
 
 
 }

@@ -42,9 +42,46 @@ class SerialWorker(QThread):
  
         self.inquiry_timer = QTimer(self)
         self.inquiry_timer.timeout.connect(self.send_inquiry)        
-        self.inquiry_timer.start(devices_asktime)  # 30000毫秒 = 30秒
+        self.inquiry_timer.start(devices_asktime) # 30000毫秒 = 30秒
         self.send_inquiry()
-        print(f"问询定时器已启动，每{devices_asktime/1000}秒发送一轮设备问询帧")    
+        print(f"问询定时器已启动，每{devices_asktime/1000}秒发送一轮设备问询帧")
+    
+    def stop_thread(self):
+        """
+        安全停止串口线程
+        关闭串口连接并停止所有定时器
+        """
+        # print("[串口线程] 正在停止串口通信线程...")
+        
+        # 设置停止标志
+        self._is_running = False
+        
+        # 停止所有定时器
+        if hasattr(self, 'inquiry_timer') and self.inquiry_timer.isActive():
+            self.inquiry_timer.stop()
+            # print("[串口线程] 问询定时器已停止")
+        
+        if hasattr(self, 'device_timer') and self.device_timer.isActive():
+            self.device_timer.stop()
+            # print("[串口线程] 设备定时器已停止")
+        
+        # 关闭串口连接
+        try:
+            if self.voice_ser and self.voice_ser.is_open:
+                self.voice_ser.close()
+                # print("[串口线程] 语音串口已关闭")
+        except Exception as e:
+            print(f"[串口线程] 关闭语音串口时出错: {e}")
+        
+        try:
+            if self.lora_ser and self.lora_ser.is_open:
+                self.lora_ser.close()
+                # print("[串口线程] LoRa串口已关闭")  
+        except Exception as e:
+            print(f"[串口线程] 关闭LoRa串口时出错: {e}")
+        
+        
+        # print("[串口线程] 串口线程停止完成")    
 
 
     def send_inquiry(self):
