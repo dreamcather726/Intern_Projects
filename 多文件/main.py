@@ -61,6 +61,9 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.serialworker = None  # 串口工作线程实例，初始为None
         
+        # 图片资源管理字典，用于跟踪已加载的图片资源
+        self.pixmap_cache = {}  # 图片路径 -> QPixmap 缓存字典
+        
         # 加载UI文件，从UI文件夹加载main.ui界面设计文件
         uic.loadUi("UI\main.ui", self)
         
@@ -95,15 +98,38 @@ class MainWindow(QMainWindow):
         self.init_label(self.hum1_label, "88.8%") 
         self.init_label(self.temp2_label, "88℃")
         self.init_label(self.hum2_label, "88.8%") 
-    def Load_pic(self,Label,pic_path):
-        if Label is not None:
-            self.pic_set = QPixmap(pic_path)
-            self.pic_set = self.pic_set.scaled(
-                Label.size(), 
-                Qt.KeepAspectRatio, 
-                Qt.SmoothTransformation
-            )
-            Label.setPixmap(self.pic_set)
+    def Load_pic(self, label, pic_path):
+        """
+        加载并显示图片到指定标签，支持图片缓存和资源管理
+        
+        Args:
+            label (QLabel): 要显示图片的标签控件
+            pic_path (str): 图片文件路径
+        """
+        if label is not None:
+            try:
+                # 检查图片是否已经在缓存中
+                if pic_path not in self.pixmap_cache:
+                    # 加载新图片并缓存
+                    pixmap = QPixmap(pic_path)
+                    if pixmap.isNull():
+                        print(f"[错误] 无法加载图片: {pic_path}")
+                        return
+                    
+                    # 缩放图片到标签大小
+                    scaled_pixmap = pixmap.scaled(
+                        label.size(), 
+                        Qt.KeepAspectRatio, 
+                        Qt.SmoothTransformation
+                    )
+                    # 缓存缩放后的图片
+                    self.pixmap_cache[pic_path] = scaled_pixmap
+                
+                # 从缓存中获取图片并设置到标签
+                label.setPixmap(self.pixmap_cache[pic_path])
+                
+            except Exception as e:
+                print(f"[错误] 加载图片失败: {pic_path}, 错误: {e}")
     def Load_pics(self):
         """加载所有图片"""
         # 图片加载配置字典：{控件对象: 图片路径}
@@ -146,7 +172,51 @@ class MainWindow(QMainWindow):
         if self.isFullScreen():
             self.showNormal()            
         else:
-            self.showFullScreen()      
+            self.showFullScreen()
+    
+    def closeEvent(self, event):
+        """
+        窗口关闭事件处理函数
+        确保在窗口关闭时正确释放所有资源
+        
+        Args:
+            event: 关闭事件对象
+        """
+        print("[资源清理] 开始清理应用程序资源...")
+        
+        try:
+            # 1. 停止并清理串口线程
+            if hasattr(self, 'serialworker') and self.serialworker:
+                # print("[资源清理] 正在停止串口通信线程...")
+                self.serialworker.stop_thread()  # 停止线程
+                self.serialworker.wait(3000)     # 等待线程结束，最多3秒
+                
+                # 断开信号连接
+                try:
+                    self.serialworker.VoiceCommand.disconnect()
+                    self.serialworker.SensorData.disconnect()
+                except:
+                    pass  # 忽略断开连接时的异常
+                
+                self.serialworker = None
+                # print("[资源清理] 串口线程已停止")
+            
+            # 2. 清理图片资源缓存
+            if hasattr(self, 'pixmap_cache'):
+                # print(f"[资源清理] 清理图片缓存，共{len(self.pixmap_cache)}个图片资源")
+                self.pixmap_cache.clear()  # 清空缓存字典
+            
+            # 3. 清理其他UI资源
+            if hasattr(self, 'background_label'):
+                self.background_label.clear()  # 清理背景标签
+            
+            print("[资源清理] 资源清理完成")
+            
+        except Exception as e:
+            print(f"[资源清理] 资源清理过程中发生错误: {e}")
+        
+        # 接受关闭事件，继续执行默认关闭操作
+        event.accept()      
     def set_background_image(self):
         # 保持原有的背景图片显示逻辑不变
         image_path = BACKGROUND_IMAGE           
