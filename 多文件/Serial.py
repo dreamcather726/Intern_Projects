@@ -130,8 +130,8 @@ class SerialWorker(QThread):
 
             if byte_data and byte_data[0] == Frame_Header[0]:  # 检测到帧头
                 if byte_data:
-                        for byte in byte_data:
-                            frame_buffer.append(byte) 
+                    frame_buffer = [*Frame_Header]
+                       
                 print(f"[帧接收] 检测到帧头 {Frame_Header[0]:02x}")
                 
                 # 继续接收帧数据直到检测到帧尾或超时
@@ -225,19 +225,12 @@ class SerialWorker(QThread):
             if not self.lora_ser or not self.lora_ser.is_open:
                 print("[错误] LoRa串口未初始化或未打开")
                 return
-            # 添加帧头
-            for i in range(len(Frame_Header)):
-                command.append(Frame_Header[i])
-            command.append(device_id)
- 
-            command.append(action)
-             # 添加帧尾
-            for i in range(len(Frame_Tail)):
-                command.append(Frame_Tail[i])
-             
+
+            
+            cmd=[*Frame_Header,device_id,action,*Frame_Tail]
         
             # 将所有部分打包成一个bytes对象
-            command = bytes(command)
+            command = bytes(cmd)
 
             # print(f"发送指令: {command}")
             # 为了提高无线通信的可靠性，同一指令连续发送3次
