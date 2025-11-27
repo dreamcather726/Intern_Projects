@@ -42,7 +42,7 @@ class SerialWorker(QThread):
  
         self.inquiry_timer = QTimer(self)
         self.inquiry_timer.timeout.connect(self.send_inquiry)        
-        self.inquiry_timer.start(devices_asktime)  # 30000毫秒 = 30秒
+        self.inquiry_timer.start(devices_asktime) # 30000毫秒 = 30秒
         self.send_inquiry()
         print(f"问询定时器已启动，每{devices_asktime/1000}秒发送一轮设备问询帧")
     
