@@ -228,7 +228,7 @@ class SerialWorker(QThread):
 
             
             cmd=[*Frame_Header,device_id,action,*Frame_Tail]
-            sum=0
+            sum=sum(cmd)
              
             # 将所有部分打包成一个bytes对象
             command = bytes(cmd)
