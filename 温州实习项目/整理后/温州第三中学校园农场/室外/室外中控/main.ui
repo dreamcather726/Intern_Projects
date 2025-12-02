@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>3846</width>
+    <height>1782</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="label_tmp">
+    <property name="geometry">
+     <rect>
+      <x>353</x>
+      <y>1025</y>
+      <width>150</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>tmp</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_hum">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>1025</y>
+      <width>150</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Hum</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_ph1">
+    <property name="geometry">
+     <rect>
+      <x>1265</x>
+      <y>1025</y>
+      <width>150</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PH1</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_ele">
+    <property name="geometry">
+     <rect>
+      <x>1700</x>
+      <y>850</y>
+      <width>150</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>tmp</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_hum_2">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>1625</y>
+      <width>150</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Hum</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_tmp_2">
+    <property name="geometry">
+     <rect>
+      <x>353</x>
+      <y>1625</y>
+      <width>150</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>tmp</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_ph1_2">
+    <property name="geometry">
+     <rect>
+      <x>1265</x>
+      <y>1625</y>
+      <width>150</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>PH1</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_ele_2">
+    <property name="geometry">
+     <rect>
+      <x>1700</x>
+      <y>1450</y>
+      <width>150</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>tmp</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_auto">
+    <property name="geometry">
+     <rect>
+      <x>2372</x>
+      <y>840</y>
+      <width>140</width>
+      <height>150</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_pl1">
+    <property name="geometry">
+     <rect>
+      <x>2870</x>
+      <y>840</y>
+      <width>140</width>
+      <height>150</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_pl2">
+    <property name="geometry">
+     <rect>
+      <x>3370</x>
+      <y>840</y>
+      <width>140</width>
+      <height>150</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_on">
+    <property name="geometry">
+     <rect>
+      <x>2342</x>
+      <y>1010</y>
+      <width>200</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>自动模式</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_on1">
+    <property name="geometry">
+     <rect>
+      <x>2915</x>
+      <y>1010</y>
+      <width>50</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_on2">
+    <property name="geometry">
+     <rect>
+      <x>3415</x>
+      <y>1010</y>
+      <width>50</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_water">
+    <property name="geometry">
+     <rect>
+      <x>2342</x>
+      <y>1730</y>
+      <width>200</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>自动模式</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_clock">
+    <property name="geometry">
+     <rect>
+      <x>1330</x>
+      <y>320</y>
+      <width>511</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>TextLabel</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
